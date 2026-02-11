@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Management Console - Meme Data Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#7C5DFA",
+              "background-light": "#F8F9FA",
+              "background-dark": "#0B0515",
+              "surface-dark": "#161021",
+              "border-dark": "#2D263D",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "12px",
+            },
+          },
+        },
+      };
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .glass {
+            background: rgba(22, 16, 33, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .stats-gradient {
+            background: linear-gradient(135deg, rgba(124, 93, 250, 0.1) 0%, rgba(124, 93, 250, 0.02) 100%);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-300">
+<nav class="border-b border-slate-200 dark:border-border-dark bg-white/50 dark:bg-surface-dark/50 backdrop-blur-md sticky top-0 z-50">
+<div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold">M</div>
+<span class="text-xl font-bold tracking-tight">MemeConsole</span>
+</div>
+<div class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-500 dark:text-slate-400">
+<a class="text-primary border-b-2 border-primary py-5" href="#">Dashboard</a>
+<a class="hover:text-primary transition-colors" href="#">Annotations</a>
+<a class="hover:text-primary transition-colors" href="#">Researcher Tools</a>
+<a class="hover:text-primary transition-colors" href="#">User Management</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full">
+<span class="material-icons-outlined">notifications</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+<img alt="Admin Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9ZlNrK7gQ22pJO9CSMdGDiRrVgafWhekEl4wJ72D0DnolqQdFV9WcTKTl3h1cjb2udk8aWIZeSLFmEqSIS_zwwjkcHe3HJ2smk_EdezSzFaGwql9_Myp1cLxo90zdgmWhJWa940gATF-QUu1fjcfhUQ-XvEydNpv6vaaMoFwKuKcpA-wN3ZBjvlPbKpfy-HQ-IaM01leI2u-iKz5EiwDXMntbTk73k0qHZUBr28cyXEoMbHEHYwi0CGYo6ygZYiT-0th0dktYxnls"/>
+</div>
+</div>
+</div>
+</nav>
+<main class="max-w-7xl mx-auto px-6 py-10">
+<header class="mb-10">
+<h1 class="text-3xl font-bold mb-2">Admin Management Console</h1>
+<p class="text-slate-500 dark:text-slate-400">Overview of meme data collection and annotation progress.</p>
+</header>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+<div class="p-6 rounded-2xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark stats-gradient">
+<div class="flex items-center justify-between mb-4">
+<span class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Users</span>
+<span class="material-icons-outlined text-primary">groups</span>
+</div>
+<div class="text-3xl font-bold mb-1">12,482</div>
+<div class="text-xs text-emerald-500 flex items-center gap-1">
+<span class="material-icons-outlined text-xs">trending_up</span>
+<span>12% from last month</span>
+</div>
+</div>
+<div class="p-6 rounded-2xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark">
+<div class="flex items-center justify-between mb-4">
+<span class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Reviews</span>
+<span class="material-icons-outlined text-primary">rate_review</span>
+</div>
+<div class="text-3xl font-bold mb-1">84,930</div>
+<div class="text-xs text-emerald-500 flex items-center gap-1">
+<span class="material-icons-outlined text-xs">trending_up</span>
+<span>5.4% from last month</span>
+</div>
+</div>
+<div class="p-6 rounded-2xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark">
+<div class="flex items-center justify-between mb-4">
+<span class="text-sm font-medium text-slate-500 dark:text-slate-400">Active Annotators</span>
+<span class="material-icons-outlined text-primary">edit_note</span>
+</div>
+<div class="text-3xl font-bold mb-1">1,204</div>
+<div class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
+<span class="material-icons-outlined text-xs">schedule</span>
+<span>Current active session</span>
+</div>
+</div>
+<div class="p-6 rounded-2xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark relative overflow-hidden">
+<div class="flex items-center justify-between mb-4">
+<span class="text-sm font-medium text-slate-500 dark:text-slate-400">Completion Rate</span>
+<span class="material-icons-outlined text-primary">pie_chart</span>
+</div>
+<div class="text-3xl font-bold mb-1">34.8%</div>
+<div class="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full mt-4">
+<div class="bg-primary h-full rounded-full" style="width: 34.8%"></div>
+</div>
+</div>
+</div>
+<section class="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-2xl p-8">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-8">
+<div class="max-w-md">
+<h2 class="text-xl font-bold mb-2">Export Data for Research</h2>
+<p class="text-slate-500 dark:text-slate-400 text-sm">Download processed datasets in standard CSV format for external analysis and machine learning training.</p>
+</div>
+<div class="flex flex-col sm:flex-row gap-4">
+<div class="flex-1 min-w-[280px] p-5 rounded-xl border border-slate-200 dark:border-border-dark bg-slate-50/50 dark:bg-white/5 group hover:border-primary/50 transition-all">
+<div class="flex items-start gap-4 mb-4">
+<div class="p-3 bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-lg">
+<span class="material-icons-outlined text-slate-600 dark:text-slate-300">person_search</span>
+</div>
+<div>
+<h3 class="font-semibold text-sm">User Details</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">Demographics, activity logs, and annotator reliability scores.</p>
+</div>
+</div>
+<button class="w-full py-2.5 px-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-primary hover:text-primary text-sm font-medium rounded-lg flex items-center justify-center gap-2 transition-all">
+<span class="material-icons-outlined text-sm">download</span>
+                            Download User Details CSV
+                        </button>
+</div>
+<div class="flex-1 min-w-[280px] p-5 rounded-xl border border-slate-200 dark:border-border-dark bg-slate-50/50 dark:bg-white/5 group hover:border-primary/50 transition-all">
+<div class="flex items-start gap-4 mb-4">
+<div class="p-3 bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-lg">
+<span class="material-icons-outlined text-slate-600 dark:text-slate-300">emoji_emotions</span>
+</div>
+<div>
+<h3 class="font-semibold text-sm">Meme Reviews</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">Full sentiment tags, offensive content filters, and metadata.</p>
+</div>
+</div>
+<button class="w-full py-2.5 px-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-primary hover:text-primary text-sm font-medium rounded-lg flex items-center justify-center gap-2 transition-all">
+<span class="material-icons-outlined text-sm">download</span>
+                            Download Meme Reviews CSV
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<div class="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="lg:col-span-2 bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-2xl overflow-hidden">
+<div class="p-6 border-b border-slate-200 dark:border-border-dark flex items-center justify-between">
+<h3 class="font-bold">Annotator Geographic Distribution</h3>
+<div class="flex gap-2">
+<span class="px-2 py-1 rounded bg-slate-100 dark:bg-white/5 text-[10px] uppercase font-bold text-slate-500">Live Updates</span>
+</div>
+</div>
+<div class="h-64 flex items-center justify-center relative">
+<div class="absolute inset-0 opacity-20 dark:opacity-30">
+<img alt="World Map Pattern" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBy_bc4LAotDv2FRu1psN7Gj8Xy0oTwLsyMX-vJl1vHF_gyMjcRYzCV98KDMU4NscLWQfdV1EFrP6lPHdLn9CAbrKFkgpmL4XbAp8fyLomlsY5s34i7fgTCgtt0OGdPZkscifm8Gcr-ilrHdTNxfAtAGQ89kbher_okgkwxrVA-TI6xahHpYCqQVeuMLOpvc8PFr__gApOCzuB-bWmMcKOGX5zS3EsybwfEFPl-YiTPInfrHThj3EGfvIWZviCWMKunaw8vUu3_0akj"/>
+</div>
+<div class="z-10 flex flex-wrap justify-center gap-4 px-6">
+<div class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-border-dark rounded-full shadow-lg flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+<span class="text-xs font-medium">London, UK — 42 active</span>
+</div>
+<div class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-border-dark rounded-full shadow-lg flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+<span class="text-xs font-medium">Lisbon, PT — 28 active</span>
+</div>
+<div class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-border-dark rounded-full shadow-lg flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+<span class="text-xs font-medium">Austin, US — 56 active</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-2xl p-6 flex flex-col justify-between">
+<div>
+<h3 class="font-bold mb-2">Accelerate Research</h3>
+<p class="text-sm text-slate-600 dark:text-slate-400 mb-6">Our platform connects high-quality annotators with researchers to provide expert insights into meme culture and digital discourse.</p>
+</div>
+<button class="w-full py-4 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform">
+                    Get Started with New Cohort
+                </button>
+</div>
+</div>
+</main>
+<footer class="mt-20 border-t border-slate-200 dark:border-border-dark py-12">
+<div class="max-w-7xl mx-auto px-6">
+<div class="flex flex-col md:flex-row items-center justify-between gap-8 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+<div class="flex items-center gap-2 font-bold text-lg">
+<span class="material-icons-outlined text-primary">hub</span>
+                    MemeConsole Network
+                </div>
+<div class="flex flex-wrap justify-center gap-8 text-sm font-semibold tracking-widest uppercase">
+<span>Google Research</span>
+<span>MIT Lab</span>
+<span>Stanford AI</span>
+<span>DeepMind</span>
+</div>
+</div>
+<div class="mt-12 text-center text-slate-400 text-xs">
+                © 2024 Admin Management Console. Built for specialized researcher data collection.
+            </div>
+</div>
+</footer>
+
+</body></html>

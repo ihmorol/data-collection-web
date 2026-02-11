@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Annotator Registration | Meme Research Lab</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#7C3AED", // Vibrant Purple from screenshot
+                        "background-light": "#F8FAFC",
+                        "background-dark": "#0B0118", // Deep dark purple/black
+                        "card-dark": "rgba(20, 10, 35, 0.8)",
+                        "accent-purple": "#A78BFA",
+                    },
+                    fontFamily: {
+                        display: ["Plus Jakarta Sans", "Inter", "sans-serif"],
+                        body: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "12px",
+                        'xl': '24px',
+                    },
+                },
+            },
+        };
+    </script>
+<style>
+        body {
+            background: radial-gradient(circle at top right, #1e0b3b 0%, #0b0118 60%);
+            min-height: 100vh;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glow-button {
+            box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+            transition: all 0.3s ease;
+        }
+        .glow-button:hover {
+            box-shadow: 0 0 35px rgba(124, 58, 237, 0.6);
+            transform: translateY(-1px);
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #7C3AED;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(124, 58, 237, 0.5);
+        }
+    </style>
+</head>
+<body class="font-body text-slate-200 antialiased overflow-x-hidden">
+<div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 blur-[120px] rounded-full -z-10"></div>
+<div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent-purple/5 blur-[120px] rounded-full -z-10"></div>
+<nav class="p-6 flex justify-between items-center max-w-7xl mx-auto">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-icons text-white text-lg">psychology</span>
+</div>
+<span class="font-display text-xl font-extrabold tracking-tight text-white">MEME<span class="text-primary">LAB</span></span>
+</div>
+<div class="flex items-center gap-6 text-sm font-medium text-slate-400">
+<a class="hover:text-white transition-colors" href="#">Documentation</a>
+<a class="hover:text-white transition-colors" href="#">Safety Guidelines</a>
+<div class="h-4 w-[1px] bg-white/10"></div>
+<a class="text-white" href="#">Login</a>
+</div>
+</nav>
+<main class="flex flex-col items-center justify-center px-4 py-12">
+<div class="text-center mb-10 space-y-3">
+<div class="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest mb-2">
+                Variant 1 of 5
+            </div>
+<h1 class="text-4xl md:text-5xl font-display font-extrabold text-white tracking-tight">Annotator Registration</h1>
+<p class="text-slate-400 max-w-lg mx-auto">Join our elite network of cultural data annotators. Help researchers understand the nuance of digital subcultures.</p>
+</div>
+<div class="w-full max-w-2xl glass-card rounded-xl p-8 md:p-10 shadow-2xl relative">
+<form action="#" class="space-y-10">
+<div class="space-y-6">
+<div class="flex items-center gap-3 pb-2 border-b border-white/5">
+<span class="material-icons text-primary text-xl">fingerprint</span>
+<h2 class="text-lg font-semibold text-white">Credentials</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="text-sm font-medium text-slate-300">Username</label>
+<div class="relative group">
+<input class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-white placeholder:text-slate-600" placeholder="mememaster_99" type="text"/>
+<div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-green-400 text-[10px] font-bold">
+<span class="material-icons text-sm">check_circle</span>
+                                    AVAILABLE
+                                </div>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-medium text-slate-300">Password</label>
+<div class="relative group">
+<input class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-white placeholder:text-slate-600" type="password" value="secretpassword"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors" type="button">
+<span class="material-icons text-xl">visibility_off</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-8">
+<div class="flex items-center gap-3 pb-2 border-b border-white/5">
+<span class="material-icons text-primary text-xl">person_search</span>
+<h2 class="text-lg font-semibold text-white">About You</h2>
+</div>
+<div class="grid grid-cols-1 gap-8">
+<div class="space-y-3">
+<label class="text-sm font-medium text-slate-300">Your Age</label>
+<div class="flex items-center gap-4 bg-white/5 p-1 rounded-xl w-fit border border-white/10">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/10 text-slate-400 transition-colors" type="button">
+<span class="material-icons">remove</span>
+</button>
+<span class="text-xl font-bold text-white px-6 w-16 text-center">24</span>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/10 text-slate-400 transition-colors" type="button">
+<span class="material-icons text-primary">add</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-3">
+<label class="text-sm font-medium text-slate-300 flex items-center gap-2">
+                                    Political Outlook <span class="text-[10px] bg-white/10 px-1.5 py-0.5 rounded uppercase text-slate-400 tracking-wider">Demographics</span>
+</label>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 rounded-full border border-white/10 bg-white/5 text-sm font-medium hover:border-primary/50 hover:bg-primary/5 transition-all text-slate-400" type="button">Left</button>
+<button class="px-4 py-2 rounded-full border-2 border-primary bg-primary/20 text-sm font-bold text-white shadow-[0_0_15px_rgba(124,58,237,0.3)] transition-all" type="button">Moderate</button>
+<button class="px-4 py-2 rounded-full border border-white/10 bg-white/5 text-sm font-medium hover:border-primary/50 hover:bg-primary/5 transition-all text-slate-400" type="button">Right</button>
+<button class="px-4 py-2 rounded-full border border-white/10 bg-white/5 text-sm font-medium hover:border-primary/50 hover:bg-primary/5 transition-all text-slate-400" type="button">Apolitical</button>
+</div>
+</div>
+<div class="space-y-3">
+<label class="text-sm font-medium text-slate-300">Religious Perspective</label>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 rounded-full border-2 border-primary bg-primary/20 text-sm font-bold text-white shadow-[0_0_15px_rgba(124,58,237,0.3)] transition-all" type="button">Non-Religious</button>
+<button class="px-4 py-2 rounded-full border border-white/10 bg-white/5 text-sm font-medium hover:border-primary/50 hover:bg-primary/5 transition-all text-slate-400" type="button">Religious</button>
+<button class="px-4 py-2 rounded-full border border-white/10 bg-white/5 text-sm font-medium hover:border-primary/50 hover:bg-primary/5 transition-all text-slate-400" type="button">Spiritual</button>
+</div>
+</div>
+</div>
+<div class="space-y-3">
+<label class="text-sm font-medium text-slate-300">Internet Literacy</label>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 rounded-full border border-white/10 bg-white/5 text-sm font-medium hover:border-primary/50 hover:bg-primary/5 transition-all text-slate-400" type="button">Surface Web</button>
+<button class="px-4 py-2 rounded-full border border-white/10 bg-white/5 text-sm font-medium hover:border-primary/50 hover:bg-primary/5 transition-all text-slate-400" type="button">Enthusiast</button>
+<button class="px-4 py-2 rounded-full border-2 border-primary bg-primary/20 text-sm font-bold text-white shadow-[0_0_15px_rgba(124,58,237,0.3)] transition-all" type="button">Chronic Online</button>
+<button class="px-4 py-2 rounded-full border border-white/10 bg-white/5 text-sm font-medium hover:border-primary/50 hover:bg-primary/5 transition-all text-slate-400" type="button">Deep Web Historian</button>
+</div>
+</div>
+<div class="space-y-6 pt-2">
+<div class="flex justify-between items-end">
+<label class="text-sm font-medium text-slate-300">Dark Humor Tolerance (1-10)</label>
+<span class="text-2xl font-bold text-primary">8</span>
+</div>
+<div class="relative px-2">
+<input class="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary" max="10" min="1" step="1" type="range" value="8"/>
+<div class="flex justify-between mt-2 px-1">
+<span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Safe for work</span>
+<span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Edge of the Abyss</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="pt-6">
+<button class="w-full bg-primary py-4 px-6 rounded-xl font-bold text-white text-lg glow-button flex items-center justify-center gap-3" type="submit">
+<span>Register as Annotator</span>
+<span class="material-icons">arrow_forward</span>
+</button>
+<p class="text-center text-xs text-slate-500 mt-6 max-w-sm mx-auto leading-relaxed">
+                        By registering, you agree to our <a class="text-slate-400 hover:text-primary underline" href="#">Ethical Framework</a> and confirm you are of legal age to view sensitive content.
+                    </p>
+</div>
+</form>
+</div>
+<div class="mt-20 flex flex-col items-center gap-6 opacity-50 grayscale hover:grayscale-0 transition-all duration-700">
+<span class="text-[10px] text-slate-500 font-bold uppercase tracking-[0.3em]">Collaborating with Research Institutions</span>
+<div class="flex flex-wrap justify-center gap-12 items-center">
+<span class="font-display font-black text-xl italic text-white/40">TECHSTARS_</span>
+<span class="font-display font-bold text-lg text-white/40">MIT RESEARCH</span>
+<span class="font-display font-bold text-lg text-white/40">DIGITAL_ETHICS</span>
+<span class="font-display font-bold text-lg text-white/40">HARVARD LAB</span>
+</div>
+</div>
+</main>
+<footer class="mt-20 py-10 border-t border-white/5">
+<div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-4 text-xs text-slate-500">
+<span>© 2024 Meme Research Lab Inc.</span>
+<div class="h-1 w-1 rounded-full bg-slate-700"></div>
+<a class="hover:text-white transition-colors" href="#">Privacy Policy</a>
+<div class="h-1 w-1 rounded-full bg-slate-700"></div>
+<a class="hover:text-white transition-colors" href="#">Terms of Service</a>
+</div>
+<div class="flex gap-4">
+<a class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 transition-all" href="#">
+<span class="material-icons text-sm">alternate_email</span>
+</a>
+<a class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 transition-all" href="#">
+<span class="material-icons text-sm">language</span>
+</a>
+</div>
+</div>
+</footer>
+
+</body></html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Meme Gallery Dashboard | Research Platform</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#7C3AED", // Vibrant Indigo/Violet from the inspiration
+              "background-light": "#F8FAFC",
+              "background-dark": "#0B0B10",
+              "card-dark": "#16161D",
+              "border-dark": "#252530",
+            },
+            fontFamily: {
+              display: ["Plus Jakarta Sans", "Inter", "sans-serif"],
+              sans: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "12px",
+            },
+          },
+        },
+      };
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-display {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .meme-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+        }
+        .progress-gradient {
+            background: linear-gradient(90deg, #7C3AED 0%, #A855F7 100%);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-300">
+<nav class="sticky top-0 z-50 border-b border-slate-200 dark:border-border-dark bg-white/80 dark:bg-background-dark/80 backdrop-blur-md px-6 py-4">
+<div class="max-w-[1440px] mx-auto flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white font-black text-xl italic">M</div>
+<span class="font-display font-extrabold text-xl tracking-tight">Meme<span class="text-primary">Scope</span></span>
+</div>
+<div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-500 dark:text-slate-400">
+<a class="text-primary hover:text-primary transition-colors" href="#">Gallery</a>
+<a class="hover:text-slate-900 dark:hover:text-white transition-colors" href="#">Datasets</a>
+<a class="hover:text-slate-900 dark:hover:text-white transition-colors" href="#">Guidelines</a>
+<a class="hover:text-slate-900 dark:hover:text-white transition-colors" href="#">Stats</a>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-3 pr-4 border-r border-slate-200 dark:border-border-dark">
+<div class="text-right hidden sm:block">
+<p class="text-xs font-semibold leading-tight">Dr. Sarah Chen</p>
+<p class="text-[10px] text-slate-500">Lead Researcher</p>
+</div>
+<img alt="Profile avatar" class="w-9 h-9 rounded-full border border-slate-200 dark:border-border-dark object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTFIEQq_H_aFY0ZwjnmBCohRT1j9YAesrX2DxDZIV_qcfh7XkgJgpEB-PBVjhXZoQ6BkKwtWZGAsBf97s_EYFhaMMqwqwPPOScEKlEJBc0Ryo9osQEGnkKvLJQnE7kl8QoV7X-l_G9wTQy7OQyEpB3B8UfKgnmac2x_3MaoUI3hrsB-LM7oQMYNerpnPZ-XIbTZ-kdtqCk-vpNoWVa9rXB6i09pQdte8NEyJHTYcVdk-EKd5MrfDff1DiLLit95e-rlt3hEiP7GeCK"/>
+</div>
+<button class="flex items-center gap-2 text-slate-500 hover:text-rose-500 transition-colors">
+<span class="material-icons-outlined text-xl">logout</span>
+</button>
+</div>
+</div>
+</nav>
+<main class="max-w-[1440px] mx-auto px-6 py-10">
+<section class="mb-12">
+<div class="glass dark:bg-card-dark rounded-3xl p-8 flex flex-col lg:flex-row items-center justify-between gap-8 border border-slate-200 dark:border-border-dark">
+<div class="flex-1 w-full">
+<div class="flex items-center justify-between mb-4">
+<h1 class="text-2xl md:text-3xl font-display font-bold">Annotation Progress</h1>
+<span class="text-primary font-bold text-xl">25.6% <span class="text-slate-400 text-sm font-normal">complete</span></span>
+</div>
+<div class="h-3 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden mb-2">
+<div class="h-full progress-gradient w-[25.6%] rounded-full shadow-[0_0_15px_rgba(124,58,237,0.5)]"></div>
+</div>
+<p class="text-sm text-slate-500 dark:text-slate-400">
+<span class="font-bold text-slate-900 dark:text-white">128</span> of 500 memes annotated in current batch.
+                    </p>
+</div>
+<div class="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+<button class="flex-1 lg:w-48 bg-primary hover:bg-violet-600 text-white font-bold py-4 px-8 rounded-2xl shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-2 group">
+                        Continue
+                        <span class="material-icons-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+<section class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+<div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 no-scrollbar">
+<button class="px-5 py-2 rounded-full bg-primary text-white text-sm font-semibold whitespace-nowrap">All Memes</button>
+<button class="px-5 py-2 rounded-full bg-white dark:bg-card-dark border border-slate-200 dark:border-border-dark text-slate-600 dark:text-slate-400 text-sm font-medium hover:border-primary transition-colors whitespace-nowrap">Pending</button>
+<button class="px-5 py-2 rounded-full bg-white dark:bg-card-dark border border-slate-200 dark:border-border-dark text-slate-600 dark:text-slate-400 text-sm font-medium hover:border-primary transition-colors whitespace-nowrap">Completed</button>
+<button class="px-5 py-2 rounded-full bg-white dark:bg-card-dark border border-slate-200 dark:border-border-dark text-slate-600 dark:text-slate-400 text-sm font-medium hover:border-primary transition-colors whitespace-nowrap">Flagged</button>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative">
+<span class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+<input class="bg-white dark:bg-card-dark border border-slate-200 dark:border-border-dark rounded-xl pl-10 pr-4 py-2 text-sm w-full md:w-64 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="Search memes..." type="text"/>
+</div>
+<button class="p-2 bg-white dark:bg-card-dark border border-slate-200 dark:border-border-dark rounded-xl hover:border-primary transition-colors">
+<span class="material-icons-outlined text-slate-400">filter_list</span>
+</button>
+</div>
+</section>
+<section class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+<div class="meme-card group relative bg-white dark:bg-card-dark rounded-2xl border border-slate-200 dark:border-border-dark overflow-hidden transition-all duration-300 cursor-pointer">
+<div class="aspect-square relative overflow-hidden">
+<img alt="Meme 1" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfsPlYiNrgnr8wocSxnURhZjeKYzRxyUCsT4oKBHii7klFWClsyEaA3Y0GYA2b9mXRULFmtHN0WgMW4opRI3qnWtf8jIpX9hbXMmYUeft_DCn64kaq4sHDN2S0SKxyf_FBFhg9mmWpaZl8KDueC5JQLs3EiMco_2a4SGT1Wp3QMWRCm77QYQUpKn1kHs0D4M64P9sVgW3t01ehag66t2aRRVtycx5djVe2wlKQDKKZa-PwJsXMG8WqH4RVrMXe2aAzJQ5C3Q3828hd"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+<span class="text-white text-xs font-medium">Batch: Political-Satire-A</span>
+</div>
+<div class="absolute top-3 right-3 bg-emerald-500 text-white p-1 rounded-full flex items-center justify-center shadow-lg">
+<span class="material-icons-outlined text-sm">done</span>
+</div>
+</div>
+<div class="p-4">
+<h3 class="font-semibold text-sm mb-1 truncate">Distracted Researcher</h3>
+<p class="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Completed 2h ago</p>
+</div>
+</div>
+<div class="meme-card group relative bg-white dark:bg-card-dark rounded-2xl border border-slate-200 dark:border-border-dark overflow-hidden transition-all duration-300 cursor-pointer">
+<div class="aspect-square relative overflow-hidden">
+<img alt="Meme 2" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDq5wyFpWIhk8Eo--zqkzQs-L4DlGAB7jeLWt41eZKgQ9T4_U_5RWS4FT2zjPOGbFnw3yM0PhkL4YjEsS9yz5dsV9UkhO1j6jYEZG93s3DqwjQKeTS5bN0uhRf44bidTA9N4CPaaKOZvOh7OwUNkEDbvTnWMadRtccNtyTTAp4wBZsCxto9qLgwShJNraDPSNok9RSoU9fkUn1M4wdI4Ot_K0LJ0E1K2SIvUGgSboI4Z_0uzG8saE_v5YjdlicTRa7PB-YW-YTuCLPs"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+<span class="text-white text-xs font-medium">Batch: Tech-Irony-B</span>
+</div>
+<div class="absolute top-3 right-3 bg-emerald-500 text-white p-1 rounded-full flex items-center justify-center shadow-lg">
+<span class="material-icons-outlined text-sm">done</span>
+</div>
+</div>
+<div class="p-4">
+<h3 class="font-semibold text-sm mb-1 truncate">Modern Problems</h3>
+<p class="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Completed 5h ago</p>
+</div>
+</div>
+<div class="meme-card group relative bg-white dark:bg-card-dark rounded-2xl border-2 border-primary border-dashed overflow-hidden transition-all duration-300 cursor-pointer">
+<div class="aspect-square relative overflow-hidden bg-slate-100 dark:bg-slate-900">
+<img alt="Meme 3" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBo8ANkocAgKy7IV5basL2LGHrFPgwb7ZTY6e4iQxhAN7Vn7DTVofkT7gePysUa1iPGxeQFDhRK4jVYJ5SAmdxoSTxPMcqhBrvxMDRKVfI1UOezymPu4MN_USNcLgAQhQI8SQb-bxBMNAPp4hVg_76cvY0aZOPzS6-39k0nxNP0zQCJVlrgtrIe7NODAoLh-uiHsAppD907VKi4d9h9VATsX5j1De8vnQUFetl-Pgc44CCBSLrqsB4QG0SvAywTGxN6WkWxvt7ve7F2"/>
+<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+<div class="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
+<span class="material-icons-outlined">play_arrow</span>
+</div>
+</div>
+<div class="absolute top-3 right-3 border-2 border-slate-400 dark:border-slate-500 bg-white/10 backdrop-blur-sm w-6 h-6 rounded-full shadow-lg"></div>
+</div>
+<div class="p-4 bg-primary/5">
+<h3 class="font-semibold text-sm mb-1 truncate text-primary italic">Next in queue</h3>
+<p class="text-[10px] text-primary/70 uppercase tracking-wider font-bold">Ready for annotation</p>
+</div>
+</div>
+<div class="meme-card group relative bg-white dark:bg-card-dark rounded-2xl border border-slate-200 dark:border-border-dark overflow-hidden transition-all duration-300 cursor-pointer">
+<div class="aspect-square relative overflow-hidden">
+<img alt="Meme 4" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuChTwA71fcd7eOulbdRsWVTmuO1IMsuWKWTYSRm9lDidWxkEW4q3SGS2hSw8tPnGw8ydWxFmRqgNmw2Aaa7YuZjkyKObJitJzftIocrDKjlBzGvA8w2sYQUzepA8014pUZ5J2Am9QarcHH0aPSrgwF4hBQmPLGKygCRdf0gzfvmjq2gUWBAbegpd8OPmuwoqvck0npDyvllIN1xaeEGB-cHhuTS3elKi8NMgvjR2DQzsd2IOwcHu3EseyymzLuumAnUx0lyvoedqiIF"/>
+<div class="absolute top-3 right-3 border-2 border-slate-300 dark:border-slate-600 w-6 h-6 rounded-full shadow-lg"></div>
+</div>
+<div class="p-4">
+<h3 class="font-semibold text-sm mb-1 truncate">Digital Heritage</h3>
+<p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Pending</p>
+</div>
+</div>
+<div class="meme-card group relative bg-white dark:bg-card-dark rounded-2xl border border-slate-200 dark:border-border-dark overflow-hidden transition-all duration-300 cursor-pointer">
+<div class="aspect-square relative overflow-hidden">
+<img alt="Meme 5" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQRZX5lNDKpcJFINw4XU2n4UhRA7Ksb-j7gjdTLezyi4teG5lfVyMYzHFmWlKEzFAFliZKmoPvyvy25f_XSryPOCqAwVjDyRlKCHrsz7h67Svo2aCfy0y_sc9xu577HrM0uzTNuVL1t0ZwtOPou_V9Xhqjve8cez2LkaKZZStMpX7jiApnA0DedKQlFwLW_w9aOBn1VxuanX5J8jGCS-ukjf6RhTz_ObHeSXJi8H5FWJnDDSIWRI6lmBl6UIw7Q9ZkCAdbs7cmOY7s"/>
+<div class="absolute top-3 right-3 border-2 border-slate-300 dark:border-slate-600 w-6 h-6 rounded-full"></div>
+</div>
+<div class="p-4">
+<h3 class="font-semibold text-sm mb-1 truncate">Circuit Overload</h3>
+<p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Pending</p>
+</div>
+</div>
+<div class="meme-card group relative bg-white dark:bg-card-dark rounded-2xl border border-slate-200 dark:border-border-dark overflow-hidden transition-all duration-300 cursor-pointer">
+<div class="aspect-square relative overflow-hidden">
+<img alt="Meme 6" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDg-UJ6tCM36geNtL_NS2232r0aa-qNoEP803c6QsdqclsoxNkv476yQ7vhcXyeaUgXFTyM527faHx3OwcM5xSB_p3Gh-km9T11bUQVlHDX6CWCllz-Xun2xExJE0nZ6RZS9RNHI5qdo2BKRZmOquTlTqG6rq_tV4QU0CJ034jG__pUa1ncs8XRLr3PSWE1Z2zDjpqU9G0W37f_K0iHur9GkvoTpmi5z4oHxA2ohzVuMAj9rOBVCkOgTPFLRS7xuv9821ihz0nIQNY8"/>
+<div class="absolute top-3 right-3 border-2 border-slate-300 dark:border-slate-600 w-6 h-6 rounded-full"></div>
+</div>
+<div class="p-4">
+<h3 class="font-semibold text-sm mb-1 truncate">Retrowave Aesthetics</h3>
+<p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Pending</p>
+</div>
+</div>
+<div class="meme-card group relative bg-white dark:bg-card-dark rounded-2xl border border-slate-200 dark:border-border-dark overflow-hidden transition-all duration-300 cursor-pointer">
+<div class="aspect-square relative overflow-hidden">
+<img alt="Meme 7" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHaCKrUBYKt5xq44hmZbC_iy5C9ORlBIVPJW-INJUs0GM0YRYWOm5224ojL85OxmIAgJNpg2bNAxRs7N7tLHMsGCU-6giRpNdf8JP54J5JnmKInU2dBsd7FvKJfrQwKD8HVRuVuKeCcutKShLw4KfgIGfZ21qDmDFzBHuchMzchGDFRCIigkzcBg2lAYNMlwLt0VAsYpgjYmDRACBgO-6Kmfc6i8qUndbCQ63_ghou8yFKV3X53bMUhe8TzTGJo3hL_qNfDdhbM5RM"/>
+<div class="absolute top-3 right-3 bg-emerald-500 text-white p-1 rounded-full flex items-center justify-center">
+<span class="material-icons-outlined text-sm">done</span>
+</div>
+</div>
+<div class="p-4">
+<h3 class="font-semibold text-sm mb-1 truncate">Code Matrix</h3>
+<p class="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Completed</p>
+</div>
+</div>
+<div class="meme-card group relative bg-white dark:bg-card-dark rounded-2xl border border-slate-200 dark:border-border-dark overflow-hidden transition-all duration-300 cursor-pointer">
+<div class="aspect-square relative overflow-hidden">
+<img alt="Meme 8" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkOxPRpkPlB4tLsppPxOVAB3nqWkNl7Z411j1WZ1rqCGBGKWNzPa-cfEwTGWKzCqHylM9op-Cp5mYAX7zf0AYDY5YOAJ0C8j7VBNZunGUxr1x-iZB4wQ06V4nGP7VnmfGvsHudR83k3WvGB1uc_nac-7cGHSalphlD0ptRRS6FQYCVRSLTx-kiZBaHQNyuyiXuMD9QqSrAnoNBm2ah5xrzYRKSdJvHDoM8b8zNr4qA9Su4pBftYEzY-0-FCKdPAt1g967SOch4fPTx"/>
+<div class="absolute top-3 right-3 border-2 border-slate-300 dark:border-slate-600 w-6 h-6 rounded-full"></div>
+</div>
+<div class="p-4">
+<h3 class="font-semibold text-sm mb-1 truncate">Laptop Lifestyle</h3>
+<p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Pending</p>
+</div>
+</div>
+<div class="meme-card group relative bg-white dark:bg-card-dark rounded-2xl border border-slate-200 dark:border-border-dark overflow-hidden transition-all duration-300 cursor-pointer">
+<div class="aspect-square relative overflow-hidden">
+<img alt="Meme 9" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLDtH3Lg42Dd98g9KVM7ahyyOjrvnaoFtfJUD9UpFFiWKyUZYDlHNJFL7lfoh9L1QH9yWAwvh44UgUP_fuEULT5qz7NqDrdf4rsaa6c4FTD6t1-4AYP1UKR5TLHaWBObqFqfPJfIQZtPQSGxIcWHTzYIcBi0UKOXzQn3OyqQd9_DbGCZL4y44ex06CWnBlMxwqbuy_ZtnUunL-0swKCdMqcUgA8wHjhoEQZ1OCuyv15ZwLomuR0yGrgaa9F3ER0W_gDk0PqGEXQ9jI"/>
+<div class="absolute top-3 right-3 border-2 border-slate-300 dark:border-slate-600 w-6 h-6 rounded-full"></div>
+</div>
+<div class="p-4">
+<h3 class="font-semibold text-sm mb-1 truncate">Global Network</h3>
+<p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Pending</p>
+</div>
+</div>
+<div class="meme-card group relative bg-white dark:bg-card-dark rounded-2xl border border-slate-200 dark:border-border-dark overflow-hidden transition-all duration-300 cursor-pointer">
+<div class="aspect-square relative overflow-hidden flex items-center justify-center bg-slate-50 dark:bg-slate-900 border-2 border-dashed border-slate-200 dark:border-slate-800">
+<div class="text-center p-6">
+<span class="material-icons-outlined text-3xl text-slate-400 mb-2">add_photo_alternate</span>
+<p class="text-xs text-slate-500 font-medium">Add to collection</p>
+</div>
+</div>
+<div class="p-4">
+<h3 class="font-semibold text-sm mb-1 truncate">Upload New</h3>
+<p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Researcher Only</p>
+</div>
+</div>
+</section>
+<footer class="mt-16 flex items-center justify-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 dark:border-border-dark text-slate-400 hover:text-primary transition-colors">
+<span class="material-icons-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-primary text-white font-bold">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 dark:border-border-dark text-slate-500 hover:border-primary transition-colors font-medium">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 dark:border-border-dark text-slate-500 hover:border-primary transition-colors font-medium">3</button>
+<span class="px-2 text-slate-400">...</span>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 dark:border-border-dark text-slate-500 hover:border-primary transition-colors font-medium">12</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 dark:border-border-dark text-slate-400 hover:text-primary transition-colors">
+<span class="material-icons-outlined">chevron_right</span>
+</button>
+</footer>
+</main>
+<div class="fixed bottom-8 right-8">
+<button class="w-14 h-14 bg-white dark:bg-card-dark shadow-2xl rounded-full flex items-center justify-center text-primary border border-slate-200 dark:border-border-dark hover:scale-110 transition-transform group">
+<span class="material-icons-outlined group-hover:rotate-12 transition-transform">help_outline</span>
+</button>
+</div>
+
+</body></html>
