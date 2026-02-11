@@ -1,0 +1,100 @@
+{
+    "team_name": "Web App Team Lite",
+    "version": "1.0.0",
+    "last_updated": "2026-02-11",
+    "description": "Lean 9-skill team for building small to medium web apps fast.",
+    "members": [
+        {
+            "role": "Planner",
+            "skill": "concise-planning",
+            "path": "skills/concise-planning",
+            "purpose": "Scope, action plans, feature prioritization"
+        },
+        {
+            "role": "Architect",
+            "skill": "senior-architect",
+            "path": "skills/senior-architect",
+            "purpose": "System design, diagrams, tech decisions"
+        },
+        {
+            "role": "Designer",
+            "skill": "ui-ux-pro-max",
+            "path": "skills/ui-ux-pro-max",
+            "purpose": "Design system, palettes, typography, layouts"
+        },
+        {
+            "role": "Builder",
+            "skill": "app-builder",
+            "path": "skills/app-builder",
+            "purpose": "Project scaffolding, stack selection"
+        },
+        {
+            "role": "Fullstack Dev",
+            "skill": "senior-fullstack",
+            "path": "skills/senior-fullstack",
+            "purpose": "Frontend + backend implementation"
+        },
+        {
+            "role": "DB Engineer",
+            "skill": "database-design",
+            "path": "skills/database-design",
+            "purpose": "Schema, migrations, indexes"
+        },
+        {
+            "role": "Code Reviewer",
+            "skill": "clean-code",
+            "path": "skills/clean-code",
+            "purpose": "SRP, DRY, KISS enforcement"
+        },
+        {
+            "role": "Tester",
+            "skill": "webapp-testing",
+            "path": "skills/webapp-testing",
+            "purpose": "Playwright e2e browser testing"
+        },
+        {
+            "role": "Deployer",
+            "skill": "vercel-deployment",
+            "path": "skills/vercel-deployment",
+            "purpose": "Deploy to Vercel, env setup"
+        }
+    ],
+    "phases": [
+        {
+            "phase": 1,
+            "name": "Plan",
+            "skills": [
+                "concise-planning",
+                "senior-architect"
+            ]
+        },
+        {
+            "phase": 2,
+            "name": "Design",
+            "skills": [
+                "ui-ux-pro-max"
+            ]
+        },
+        {
+            "phase": 3,
+            "name": "Build",
+            "skills": [
+                "app-builder",
+                "senior-fullstack",
+                "database-design",
+                "clean-code"
+            ]
+        },
+        {
+            "phase": 4,
+            "name": "Ship",
+            "skills": [
+                "webapp-testing",
+                "vercel-deployment"
+            ]
+        }
+    ],
+    "deployment_targets": [
+        "vercel"
+    ]
+}
