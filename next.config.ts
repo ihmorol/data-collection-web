@@ -12,7 +12,9 @@ const supabaseOrigin = (() => {
 
 const contentSecurityPolicy = [
     "default-src 'self'",
-    `script-src 'self'${process.env.NODE_ENV === "development" ? " 'unsafe-inline' 'unsafe-eval'" : ""}`,
+    // Next.js injects a small inline bootstrap script needed for hydration.
+    // Without 'unsafe-inline' in production, client components become non-interactive.
+    `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "img-src 'self' data: blob: https:",
     "font-src 'self' https://fonts.gstatic.com",
