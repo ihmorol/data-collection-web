@@ -35,12 +35,21 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-        const body = await request.json();
-        const { username, password, rememberMe } = body;
+        const body = (await request.json()) as unknown;
+        if (!body || typeof body !== "object") {
+            return jsonError(400, "INVALID_REQUEST", "Invalid request body");
+        }
+
+        const { username, password, rememberMe } = body as {
+            username?: unknown;
+            password?: unknown;
+            rememberMe?: unknown;
+        };
         const normalizedUsername =
             typeof username === "string" ? username.trim() : "";
         const normalizedPassword =
             typeof password === "string" ? password : "";
+        const remember = rememberMe === true;
 
         if (!normalizedUsername || !normalizedPassword) {
             return jsonError(
@@ -75,7 +84,7 @@ export async function POST(request: NextRequest) {
                     success: true,
                     role: "admin",
                 });
-                createSession(response, admin.id, "admin", !!rememberMe);
+                createSession(response, admin.id, "admin", remember);
                 return response;
             }
         }
@@ -116,7 +125,7 @@ export async function POST(request: NextRequest) {
             success: true,
             role: "user",
         });
-        createSession(response, user.id, "user", !!rememberMe);
+        createSession(response, user.id, "user", remember);
         return response;
     } catch {
         return jsonError(400, "INVALID_REQUEST", "Invalid request body");

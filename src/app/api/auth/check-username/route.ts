@@ -13,18 +13,26 @@ export async function GET(request: NextRequest) {
     }
 
     const supabase = createServerSupabaseClient();
-    const { data, error } = await supabase
-        .from("annotators")
-        .select("id")
-        .eq("username", normalizedUsername)
-        .maybeSingle();
+    const [{ data: annotator, error: annotatorError }, { data: admin, error: adminError }] =
+        await Promise.all([
+            supabase
+                .from("annotators")
+                .select("id")
+                .eq("username", normalizedUsername)
+                .maybeSingle(),
+            supabase
+                .from("admins")
+                .select("id")
+                .eq("username", normalizedUsername)
+                .maybeSingle(),
+        ]);
 
-    if (error) {
+    if (annotatorError || (adminError && adminError.code !== "42P01")) {
         return NextResponse.json(
             { error: "Unable to check username availability" },
             { status: 500 }
         );
     }
 
-    return NextResponse.json({ available: !data });
+    return NextResponse.json({ available: !annotator && !admin });
 }

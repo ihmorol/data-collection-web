@@ -6,21 +6,17 @@ type MemeCardProps = {
     imageName: string;
     displayOrder: number;
     reviewed: boolean;
-    // onClick: () => void;
 };
 
 export default function MemeCard({
     imageName,
     displayOrder,
     reviewed,
-    // onClick,
 }: MemeCardProps) {
     return (
-        <button
-            type="button"
-            // onClick={onClick}
-            className="group w-full text-left"
-            aria-label={`Open meme #${String(displayOrder).padStart(3, "0")}`}
+        <article
+            className="group w-full"
+            aria-label={`Meme #${String(displayOrder).padStart(3, "0")}`}
         >
             <div className="relative overflow-hidden rounded-[var(--radius-md)] border border-border-dark bg-card-dark shadow-sm transition-all duration-200 group-hover:-translate-y-2 group-hover:shadow-xl">
                 <Image
@@ -41,6 +37,6 @@ export default function MemeCard({
             <div className="mt-2 text-sm font-medium text-slate-300">
                 #{String(displayOrder).padStart(3, "0")}
             </div>
-        </button>
+        </article>
     );
 }

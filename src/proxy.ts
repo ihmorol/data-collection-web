@@ -56,10 +56,9 @@ function decodePayload(part: string): SessionPayload | null {
         ) {
             return null;
         }
-        if (typeof parsed.exp === "number") {
-            const nowSeconds = Math.floor(Date.now() / 1000);
-            if (parsed.exp < nowSeconds) return null;
-        }
+        if (typeof parsed.exp !== "number") return null;
+        const nowSeconds = Math.floor(Date.now() / 1000);
+        if (parsed.exp < nowSeconds) return null;
         return parsed;
     } catch {
         return null;
@@ -67,32 +66,36 @@ function decodePayload(part: string): SessionPayload | null {
 }
 
 async function verifySessionToken(token: string): Promise<SessionPayload | null> {
-    const secret = process.env.SESSION_SECRET;
-    if (!secret) return null;
+    try {
+        const secret = process.env.SESSION_SECRET;
+        if (!secret || secret.length < 32) return null;
 
-    const parts = token.split(".");
-    if (parts.length !== 3) return null;
-    const [header, payload, signature] = parts;
-    const data = `${header}.${payload}`;
-    const signatureBytes = Uint8Array.from(base64UrlToBytes(signature));
+        const parts = token.split(".");
+        if (parts.length !== 3) return null;
+        const [header, payload, signature] = parts;
+        const data = `${header}.${payload}`;
+        const signatureBytes = Uint8Array.from(base64UrlToBytes(signature));
 
-    const key = await crypto.subtle.importKey(
-        "raw",
-        encoder.encode(secret),
-        { name: "HMAC", hash: "SHA-256" },
-        false,
-        ["verify"]
-    );
+        const key = await crypto.subtle.importKey(
+            "raw",
+            encoder.encode(secret),
+            { name: "HMAC", hash: "SHA-256" },
+            false,
+            ["verify"]
+        );
 
-    const valid = await crypto.subtle.verify(
-        "HMAC",
-        key,
-        signatureBytes,
-        encoder.encode(data)
-    );
-    if (!valid) return null;
+        const valid = await crypto.subtle.verify(
+            "HMAC",
+            key,
+            signatureBytes,
+            encoder.encode(data)
+        );
+        if (!valid) return null;
 
-    return decodePayload(payload);
+        return decodePayload(payload);
+    } catch {
+        return null;
+    }
 }
 
 async function getSessionFromRequest(request: NextRequest) {
