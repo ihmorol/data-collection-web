@@ -12,7 +12,7 @@ const supabaseOrigin = (() => {
 
 const contentSecurityPolicy = [
     "default-src 'self'",
-    "script-src 'self'",
+    `script-src 'self'${process.env.NODE_ENV === "development" ? " 'unsafe-inline' 'unsafe-eval'" : ""}`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "img-src 'self' data: blob: https:",
     "font-src 'self' https://fonts.gstatic.com",

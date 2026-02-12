@@ -12,13 +12,15 @@ export default function LoginPage() {
     const [rememberMe, setRememberMe] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    
     const [error, setError] = useState("");
-
-    const canSubmit = username.trim().length > 0 && password.length > 0;
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (!canSubmit) return;
+        if (username.trim().length === 0 || password.length === 0) {
+            setError("Please enter username and password");
+            return;
+        }
 
         setError("");
         setLoading(true);
@@ -138,7 +140,7 @@ export default function LoginPage() {
                         Remember this device
                     </label>
 
-                    <GlowButton type="submit" fullWidth loading={loading} disabled={!canSubmit}>
+                    <GlowButton type="submit" fullWidth loading={loading}>
                         Sign In →
                     </GlowButton>
 
