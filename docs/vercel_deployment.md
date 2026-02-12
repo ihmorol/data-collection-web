@@ -18,15 +18,6 @@
    - **anon public key** → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - **service_role secret key** → `SUPABASE_SERVICE_ROLE_KEY`
 
-### Upstash Redis (for distributed login rate limits)
-
-1. Open https://console.upstash.com/
-2. Create a Redis database (free tier is enough).
-3. Open the database details page.
-4. Copy:
-   - **REST URL** → `UPSTASH_REDIS_REST_URL`
-   - **REST Token** → `UPSTASH_REDIS_REST_TOKEN`
-
 ### Session Secret
 
 Generate:
@@ -46,11 +37,12 @@ Add these in Vercel for **Production** (and Preview if needed):
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `ADMIN_BOOTSTRAP_USERNAME`
 - `ADMIN_BOOTSTRAP_PASSWORD`
+- `ADMIN_USERNAME` (optional legacy fallback)
+- `ADMIN_PASSWORD` (optional legacy fallback)
 - `SESSION_SECRET` (32+ chars)
 - `JWT_ISSUER` (e.g. `memeconsole`)
 - `JWT_AUDIENCE` (e.g. `memeconsole-web`)
-- `UPSTASH_REDIS_REST_URL`
-- `UPSTASH_REDIS_REST_TOKEN`
+- `RATE_LIMIT_HASH_SECRET` (optional; if omitted, `SESSION_SECRET` is used)
 - `ALLOWED_ORIGINS` (optional, comma-separated)
 
 ## 4. Build & Deploy
