@@ -108,11 +108,11 @@ export default function GalleryPage() {
                     )}
                 </section>
 
-                {error && (
+                {error ? (
                     <div className="mb-6 rounded-[var(--radius-md)] border border-error/40 bg-error/10 px-4 py-3 text-sm text-error">
                         {error}
                     </div>
-                )}
+                ) : null}
 
                 <section
                     className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-5"
@@ -125,7 +125,6 @@ export default function GalleryPage() {
                         : payload.memes.map((meme) => (
                             <MemeCard
                                 key={meme.id}
-                                id={meme.id}
                                 imageName={meme.image_name}
                                 displayOrder={meme.display_order}
                                 reviewed={meme.reviewed}

@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { verifySessionToken } from "@/lib/auth";
+
+type SessionPayload = {
+    userId: number;
+    role: "user" | "admin";
+    exp?: number;
+};
 
 const PUBLIC_ROUTES = ["/login", "/register"];
 const AUTH_API_PREFIX = "/api/auth/";
@@ -9,15 +14,78 @@ const ADMIN_ROUTE_PREFIX = "/admin";
 const ADMIN_API_PREFIX = "/api/admin/";
 const USER_API_PREFIX = "/api/responses";
 
-function getSessionFromRequest(request: NextRequest) {
+const encoder = new TextEncoder();
+
+function base64UrlToBytes(input: string): Uint8Array {
+    const normalized = input.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = normalized + "=".repeat((4 - (normalized.length % 4)) % 4);
+    const decoded = atob(padded);
+    const output = new Uint8Array(decoded.length);
+    for (let i = 0; i < decoded.length; i += 1) {
+        output[i] = decoded.charCodeAt(i);
+    }
+    return output;
+}
+
+function decodePayload(part: string): SessionPayload | null {
+    try {
+        const json = new TextDecoder().decode(base64UrlToBytes(part));
+        const parsed = JSON.parse(json) as SessionPayload;
+        if (
+            !parsed ||
+            typeof parsed.userId !== "number" ||
+            (parsed.role !== "user" && parsed.role !== "admin")
+        ) {
+            return null;
+        }
+        if (typeof parsed.exp === "number") {
+            const nowSeconds = Math.floor(Date.now() / 1000);
+            if (parsed.exp < nowSeconds) return null;
+        }
+        return parsed;
+    } catch {
+        return null;
+    }
+}
+
+async function verifySessionToken(token: string): Promise<SessionPayload | null> {
+    const secret = process.env.SESSION_SECRET;
+    if (!secret) return null;
+
+    const parts = token.split(".");
+    if (parts.length !== 3) return null;
+    const [header, payload, signature] = parts;
+    const data = `${header}.${payload}`;
+    const signatureBytes = Uint8Array.from(base64UrlToBytes(signature));
+
+    const key = await crypto.subtle.importKey(
+        "raw",
+        encoder.encode(secret),
+        { name: "HMAC", hash: "SHA-256" },
+        false,
+        ["verify"]
+    );
+
+    const valid = await crypto.subtle.verify(
+        "HMAC",
+        key,
+        signatureBytes,
+        encoder.encode(data)
+    );
+    if (!valid) return null;
+
+    return decodePayload(payload);
+}
+
+async function getSessionFromRequest(request: NextRequest) {
     const token = request.cookies.get("session")?.value;
     if (!token) return null;
     return verifySessionToken(token);
 }
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
-    const session = getSessionFromRequest(request);
+    const session = await getSessionFromRequest(request);
 
     if (
         pathname.startsWith("/_next") ||
@@ -33,8 +101,7 @@ export function middleware(request: NextRequest) {
 
     if (PUBLIC_ROUTES.includes(pathname)) {
         if (session) {
-            const redirectUrl =
-                session.role === "admin" ? "/admin" : "/gallery";
+            const redirectUrl = session.role === "admin" ? "/admin" : "/gallery";
             return NextResponse.redirect(new URL(redirectUrl, request.url));
         }
         return NextResponse.next();

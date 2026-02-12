@@ -50,7 +50,10 @@ export default function NavBar({
         <header className="fixed inset-x-0 top-0 z-50 border-b border-border-dark/80 bg-surface-dark/70 backdrop-blur-xl">
             <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
                 <div className="flex items-center gap-5">
-                    <Link href={variant === "admin" ? "/admin" : "/gallery"} className="flex items-center gap-2">
+                    <Link
+                        href={variant === "admin" ? "/admin" : "/gallery"}
+                        className="flex items-center gap-2"
+                    >
                         <span className="material-icons text-primary">bolt</span>
                         <span className="font-display text-lg font-bold text-white">
                             MemeConsole
@@ -80,11 +83,11 @@ export default function NavBar({
                 </div>
 
                 <div className="hidden items-center gap-3 md:flex">
-                    {rightBadge && (
+                    {rightBadge ? (
                         <span className="rounded-full border border-primary/40 bg-primary/15 px-3 py-1 text-xs font-semibold text-primary-light">
                             {rightBadge}
                         </span>
-                    )}
+                    ) : null}
                     <span className="rounded-full border border-border-dark bg-card-dark px-3 py-1 text-xs font-semibold text-slate-200">
                         {variant === "admin" ? "Admin" : username || "Annotator"}
                     </span>
@@ -108,7 +111,7 @@ export default function NavBar({
                 </button>
             </div>
 
-            {menuOpen && (
+            {menuOpen ? (
                 <div className="border-t border-border-dark bg-surface-dark/95 px-4 py-3 md:hidden">
                     <div className="mb-2 text-xs font-semibold text-slate-400">
                         {variant === "admin" ? "Admin" : username || "Annotator"}
@@ -134,7 +137,7 @@ export default function NavBar({
                         </button>
                     </div>
                 </div>
-            )}
+            ) : null}
         </header>
     );
 }

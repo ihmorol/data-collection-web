@@ -3,7 +3,6 @@
 import Image from "next/image";
 
 type MemeCardProps = {
-    id: number;
     imageName: string;
     displayOrder: number;
     reviewed: boolean;
@@ -11,7 +10,6 @@ type MemeCardProps = {
 };
 
 export default function MemeCard({
-    id,
     imageName,
     displayOrder,
     reviewed,
@@ -43,7 +41,6 @@ export default function MemeCard({
             <div className="mt-2 text-sm font-medium text-slate-300">
                 #{String(displayOrder).padStart(3, "0")}
             </div>
-            <div className="sr-only">Meme ID {id}</div>
         </button>
     );
 }

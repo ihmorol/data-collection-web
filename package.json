@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed": "npx tsx scripts/seed.ts",
+    "verify:seed": "npx tsx scripts/verify-seed.ts",
+    "test:e2e:smoke": "python3 scripts/e2e_smoke.py"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.95.3",
