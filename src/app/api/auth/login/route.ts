@@ -1,48 +1,60 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
-import { verifyPassword, setSessionCookie } from "@/lib/auth";
+import { createSession, verifyPassword } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
         const { username, password, rememberMe } = body;
+        const normalizedUsername =
+            typeof username === "string" ? username.trim() : "";
+        const normalizedPassword =
+            typeof password === "string" ? password : "";
 
-        if (!username || !password) {
+        if (!normalizedUsername || !normalizedPassword) {
             return NextResponse.json(
                 { error: "Username and password are required" },
                 { status: 400 }
             );
         }
 
-        // Check admin credentials first
         if (
-            username === process.env.ADMIN_USERNAME &&
-            password === process.env.ADMIN_PASSWORD
+            normalizedUsername === process.env.ADMIN_USERNAME &&
+            normalizedPassword === process.env.ADMIN_PASSWORD
         ) {
             const response = NextResponse.json({
                 success: true,
                 role: "admin",
             });
-            setSessionCookie(response, 0, "admin", !!rememberMe);
+            createSession(response, 0, "admin", !!rememberMe);
             return response;
         }
 
-        // Check database for regular user
         const supabase = createServerSupabaseClient();
-        const { data: user } = await supabase
+        const { data: user, error } = await supabase
             .from("annotators")
             .select("id, password_hash")
-            .eq("username", username)
-            .single();
+            .eq("username", normalizedUsername)
+            .maybeSingle();
 
-        if (!user) {
+        if (error) {
+            return NextResponse.json(
+                { error: "Login failed. Please try again." },
+                { status: 500 }
+            );
+        }
+
+        if (!user?.password_hash) {
             return NextResponse.json(
                 { error: "Invalid username or password" },
                 { status: 401 }
             );
         }
 
-        const passwordValid = await verifyPassword(password, user.password_hash);
+        const passwordValid = await verifyPassword(
+            normalizedPassword,
+            user.password_hash
+        );
         if (!passwordValid) {
             return NextResponse.json(
                 { error: "Invalid username or password" },
@@ -54,7 +66,7 @@ export async function POST(request: NextRequest) {
             success: true,
             role: "user",
         });
-        setSessionCookie(response, user.id, "user", !!rememberMe);
+        createSession(response, user.id, "user", !!rememberMe);
         return response;
     } catch {
         return NextResponse.json(

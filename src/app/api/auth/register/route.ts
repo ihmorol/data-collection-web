@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
-import { hashPassword, setSessionCookie } from "@/lib/auth";
+import { createSession, hashPassword } from "@/lib/auth";
 
 const VALID_POLITICAL = [
     "Progressive",
@@ -27,18 +27,24 @@ export async function POST(request: NextRequest) {
             internet_literacy,
             dark_humor_tolerance,
         } = body;
+        const normalizedUsername =
+            typeof username === "string" ? username.trim() : "";
 
-        // Validate required fields
         const errors: Record<string, string> = {};
 
-        if (!username || typeof username !== "string" || username.trim().length < 3)
+        if (!normalizedUsername || normalizedUsername.length < 3)
             errors.username = "Username must be at least 3 characters";
 
         if (!password || typeof password !== "string" || password.length < 6)
             errors.password = "Password must be at least 6 characters";
 
         const ageNum = Number(age);
-        if (!age || !Number.isInteger(ageNum) || ageNum < 13 || ageNum > 100)
+        if (
+            age === undefined ||
+            !Number.isInteger(ageNum) ||
+            ageNum < 13 ||
+            ageNum > 100
+        )
             errors.age = "Age must be an integer between 13 and 100";
 
         if (!VALID_POLITICAL.includes(political_outlook))
@@ -65,12 +71,18 @@ export async function POST(request: NextRequest) {
 
         const supabase = createServerSupabaseClient();
 
-        // Check if username already exists
-        const { data: existing } = await supabase
+        const { data: existing, error: existingError } = await supabase
             .from("annotators")
             .select("id")
-            .eq("username", username.trim())
-            .single();
+            .eq("username", normalizedUsername)
+            .maybeSingle();
+
+        if (existingError) {
+            return NextResponse.json(
+                { errors: { general: "Unable to validate username right now" } },
+                { status: 500 }
+            );
+        }
 
         if (existing) {
             return NextResponse.json(
@@ -79,12 +91,11 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Hash password and insert
         const password_hash = await hashPassword(password);
         const { data: user, error } = await supabase
             .from("annotators")
             .insert({
-                username: username.trim(),
+                username: normalizedUsername,
                 password_hash,
                 age: ageNum,
                 political_outlook,
@@ -96,7 +107,12 @@ export async function POST(request: NextRequest) {
             .single();
 
         if (error) {
-            console.error("Registration error:", error);
+            if (error.code === "23505") {
+                return NextResponse.json(
+                    { errors: { username: "Username is already taken" } },
+                    { status: 409 }
+                );
+            }
             return NextResponse.json(
                 { errors: { general: "Registration failed. Please try again." } },
                 { status: 500 }
@@ -107,7 +123,7 @@ export async function POST(request: NextRequest) {
             { success: true, userId: user.id },
             { status: 201 }
         );
-        setSessionCookie(response, user.id, "user");
+        createSession(response, user.id, "user");
         return response;
     } catch {
         return NextResponse.json(

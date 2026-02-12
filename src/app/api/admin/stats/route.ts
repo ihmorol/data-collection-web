@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { getSession } from "@/lib/auth";
 
 export async function GET() {
+    const session = await getSession();
+    if (!session || session.role !== "admin") {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const supabase = createServerSupabaseClient();
 
     const [usersResult, reviewsResult, activeResult] = await Promise.all([

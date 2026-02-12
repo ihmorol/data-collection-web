@@ -3,7 +3,17 @@ import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-const SESSION_SECRET = process.env.SESSION_SECRET!;
+function getSessionSecret(): string {
+    const secret = process.env.SESSION_SECRET;
+    if (!secret) {
+        throw new Error("Missing required environment variable: SESSION_SECRET");
+    }
+    if (secret.length < 32) {
+        throw new Error("SESSION_SECRET must be at least 32 characters");
+    }
+    return secret;
+}
+
 const COOKIE_NAME = "session";
 const BCRYPT_ROUNDS = 12;
 const DEFAULT_MAX_AGE = 86400; // 24 hours
@@ -28,26 +38,34 @@ export function createSessionToken(
     userId: number,
     role: "user" | "admin"
 ): string {
-    return jwt.sign({ userId, role }, SESSION_SECRET, {
+    return jwt.sign({ userId, role }, getSessionSecret(), {
         expiresIn: DEFAULT_MAX_AGE,
     });
 }
 
 export function verifySessionToken(token: string): SessionPayload | null {
     try {
-        const payload = jwt.verify(token, SESSION_SECRET) as SessionPayload;
-        return payload;
+        const payload = jwt.verify(token, getSessionSecret()) as SessionPayload;
+        if (
+            !payload ||
+            typeof payload !== "object" ||
+            typeof payload.userId !== "number" ||
+            (payload.role !== "user" && payload.role !== "admin")
+        ) {
+            return null;
+        }
+        return { userId: payload.userId, role: payload.role };
     } catch {
         return null;
     }
 }
 
-export function setSessionCookie(
+export function createSession(
     response: NextResponse,
     userId: number,
     role: "user" | "admin",
     rememberMe: boolean = false
-): void {
+): string {
     const token = createSessionToken(userId, role);
     const maxAge = rememberMe ? 30 * 24 * 60 * 60 : DEFAULT_MAX_AGE;
     response.cookies.set(COOKIE_NAME, token, {
@@ -57,11 +75,14 @@ export function setSessionCookie(
         path: "/",
         maxAge,
     });
+    return token;
 }
 
-export async function getSession(): Promise<SessionPayload | null> {
-    const cookieStore = await cookies();
-    const token = cookieStore.get(COOKIE_NAME)?.value;
+export async function getSession(
+    cookieStore?: Awaited<ReturnType<typeof cookies>>
+): Promise<SessionPayload | null> {
+    const store = cookieStore ?? (await cookies());
+    const token = store.get(COOKIE_NAME)?.value;
     if (!token) return null;
     return verifySessionToken(token);
 }
@@ -72,10 +93,10 @@ export function getSessionFromHeader(
     if (!cookieHeader) return null;
     const match = cookieHeader.match(new RegExp(`${COOKIE_NAME}=([^;]+)`));
     if (!match) return null;
-    return verifySessionToken(match[1]);
+    return verifySessionToken(decodeURIComponent(match[1]));
 }
 
-export function clearSessionCookie(response: NextResponse): void {
+export function destroySession(response: NextResponse): void {
     response.cookies.set(COOKIE_NAME, "", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -84,3 +105,6 @@ export function clearSessionCookie(response: NextResponse): void {
         maxAge: 0,
     });
 }
+
+export const setSessionCookie = createSession;
+export const clearSessionCookie = destroySession;
