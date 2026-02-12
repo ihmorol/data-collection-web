@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useEffect } from "react";
+
 interface AgeInputProps {
     value: number;
     onChange: (value: number) => void;
@@ -21,13 +23,43 @@ export default function AgeInput({
     error,
     disabled = false,
 }: AgeInputProps) {
+    const [localValue, setLocalValue] = useState(value.toString());
+
+    useEffect(() => {
+        setLocalValue(value.toString());
+    }, [value]);
+
     const atMin = value <= min;
     const atMax = value >= max;
 
-    const onInputChange = (rawValue: string) => {
-        const parsed = Number(rawValue);
+    const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = e.target.value;
+        setLocalValue(newValue);
+
+        if (newValue === "") return;
+
+        const parsed = Number(newValue);
         if (!Number.isFinite(parsed)) return;
-        onChange(clamp(Math.round(parsed), min, max));
+
+        const rounded = Math.round(parsed);
+        if (rounded >= min && rounded <= max) {
+            onChange(rounded);
+        }
+    };
+
+    const onBlur = () => {
+        const parsed = Number(localValue);
+        const valid = Number.isFinite(parsed) && localValue !== "";
+
+        let newValue = value;
+        if (valid) {
+            newValue = clamp(Math.round(parsed), min, max);
+        }
+
+        setLocalValue(newValue.toString());
+        if (valid && newValue !== value) {
+            onChange(newValue);
+        }
     };
 
     return (
@@ -53,9 +85,10 @@ export default function AgeInput({
                     type="number"
                     min={min}
                     max={max}
-                    value={value}
+                    value={localValue}
                     disabled={disabled}
-                    onChange={(e) => onInputChange(e.target.value)}
+                    onChange={onInputChange}
+                    onBlur={onBlur}
                     className={`w-full px-4 py-3 rounded-[var(--radius-md)] bg-surface-dark border text-white placeholder:text-slate-500
           focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all
           ${error ? "border-error" : "border-border-dark"}`}
