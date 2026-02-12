@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { createSession, hashPassword } from "@/lib/auth";
+import { validateCsrfOrigin } from "@/lib/csrf";
 
 const VALID_POLITICAL = [
     "Progressive",
@@ -16,6 +17,9 @@ const VALID_RELIGIOUS = [
 const VALID_LITERACY = ["Casual User", "Meme Savvy", "Chronically Online"];
 
 export async function POST(request: NextRequest) {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     try {
         const body = await request.json();
         const {
@@ -66,27 +70,60 @@ export async function POST(request: NextRequest) {
             errors.dark_humor_tolerance = "Must be an integer between 1 and 10";
 
         if (Object.keys(errors).length > 0) {
-            return NextResponse.json({ errors }, { status: 400 });
+            return NextResponse.json(
+                {
+                    success: false,
+                    code: "VALIDATION_ERROR",
+                    errors,
+                },
+                { status: 400 }
+            );
         }
 
         const supabase = createServerSupabaseClient();
 
-        const { data: existing, error: existingError } = await supabase
-            .from("annotators")
-            .select("id")
-            .eq("username", normalizedUsername)
-            .maybeSingle();
+        const [{ data: existing, error: existingError }, { data: existingAdmin, error: existingAdminError }] =
+            await Promise.all([
+                supabase
+                    .from("annotators")
+                    .select("id")
+                    .eq("username", normalizedUsername)
+                    .maybeSingle(),
+                supabase
+                    .from("admins")
+                    .select("id")
+                    .eq("username", normalizedUsername)
+                    .maybeSingle(),
+            ]);
 
         if (existingError) {
             return NextResponse.json(
-                { errors: { general: "Unable to validate username right now" } },
+                {
+                    success: false,
+                    code: "LOOKUP_FAILED",
+                    errors: { general: "Unable to validate username right now" },
+                },
+                { status: 500 }
+            );
+        }
+        if (existingAdminError && existingAdminError.code !== "42P01") {
+            return NextResponse.json(
+                {
+                    success: false,
+                    code: "LOOKUP_FAILED",
+                    errors: { general: "Unable to validate username right now" },
+                },
                 { status: 500 }
             );
         }
 
-        if (existing) {
+        if (existing || existingAdmin) {
             return NextResponse.json(
-                { errors: { username: "Username is already taken" } },
+                {
+                    success: false,
+                    code: "USERNAME_TAKEN",
+                    errors: { username: "Username is already taken" },
+                },
                 { status: 409 }
             );
         }
@@ -109,12 +146,20 @@ export async function POST(request: NextRequest) {
         if (error) {
             if (error.code === "23505") {
                 return NextResponse.json(
-                    { errors: { username: "Username is already taken" } },
+                    {
+                        success: false,
+                        code: "USERNAME_TAKEN",
+                        errors: { username: "Username is already taken" },
+                    },
                     { status: 409 }
                 );
             }
             return NextResponse.json(
-                { errors: { general: "Registration failed. Please try again." } },
+                {
+                    success: false,
+                    code: "REGISTRATION_FAILED",
+                    errors: { general: "Registration failed. Please try again." },
+                },
                 { status: 500 }
             );
         }
@@ -127,7 +172,11 @@ export async function POST(request: NextRequest) {
         return response;
     } catch {
         return NextResponse.json(
-            { errors: { general: "Invalid request body" } },
+            {
+                success: false,
+                code: "INVALID_REQUEST",
+                errors: { general: "Invalid request body" },
+            },
             { status: 400 }
         );
     }

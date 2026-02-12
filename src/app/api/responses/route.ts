@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { getSession } from "@/lib/auth";
+import { validateCsrfOrigin } from "@/lib/csrf";
 
 const VALID_PERCEPTION = [
     "Very Negative",
@@ -78,11 +79,17 @@ export async function GET() {
     });
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     const session = await getSession();
     if (!session || session.role !== "user") {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        return NextResponse.json(
+            { success: false, code: "UNAUTHORIZED", error: "Unauthorized" },
+            { status: 401 }
+        );
     }
+
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
 
     try {
         const body = await request.json();
@@ -118,7 +125,10 @@ export async function POST(request: Request) {
         }
 
         if (Object.keys(errors).length > 0) {
-            return NextResponse.json({ errors }, { status: 400 });
+            return NextResponse.json(
+                { success: false, code: "VALIDATION_ERROR", errors },
+                { status: 400 }
+            );
         }
 
         const supabase = createServerSupabaseClient();
@@ -130,10 +140,20 @@ export async function POST(request: Request) {
             .maybeSingle();
 
         if (memeError) {
-            return NextResponse.json({ error: "Failed to fetch meme" }, { status: 500 });
+            return NextResponse.json(
+                {
+                    success: false,
+                    code: "MEME_FETCH_FAILED",
+                    error: "Failed to fetch meme",
+                },
+                { status: 500 }
+            );
         }
         if (!meme) {
-            return NextResponse.json({ error: "Meme not found" }, { status: 404 });
+            return NextResponse.json(
+                { success: false, code: "NOT_FOUND", error: "Meme not found" },
+                { status: 404 }
+            );
         }
 
         const { data: existingReview, error: existingReviewError } = await supabase
@@ -145,7 +165,11 @@ export async function POST(request: Request) {
 
         if (existingReviewError) {
             return NextResponse.json(
-                { error: "Failed to check existing review" },
+                {
+                    success: false,
+                    code: "REVIEW_LOOKUP_FAILED",
+                    error: "Failed to check existing review",
+                },
                 { status: 500 }
             );
         }
@@ -171,18 +195,22 @@ export async function POST(request: Request) {
 
         if (upsertError) {
             return NextResponse.json(
-                { error: "Failed to save review" },
+                {
+                    success: false,
+                    code: "REVIEW_SAVE_FAILED",
+                    error: "Failed to save review",
+                },
                 { status: 500 }
             );
         }
 
         return NextResponse.json(
-            { review },
+            { success: true, review },
             { status: existingReview ? 200 : 201 }
         );
     } catch {
         return NextResponse.json(
-            { error: "Invalid request body" },
+            { success: false, code: "INVALID_REQUEST", error: "Invalid request body" },
             { status: 400 }
         );
     }

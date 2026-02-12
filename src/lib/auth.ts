@@ -23,6 +23,14 @@ export interface SessionPayload {
     role: "user" | "admin";
 }
 
+function getJwtIssuer(): string {
+    return process.env.JWT_ISSUER?.trim() || "memeconsole";
+}
+
+function getJwtAudience(): string {
+    return process.env.JWT_AUDIENCE?.trim() || "memeconsole-web";
+}
+
 export async function hashPassword(password: string): Promise<string> {
     return bcrypt.hash(password, BCRYPT_ROUNDS);
 }
@@ -36,16 +44,24 @@ export async function verifyPassword(
 
 export function createSessionToken(
     userId: number,
-    role: "user" | "admin"
+    role: "user" | "admin",
+    maxAge: number = DEFAULT_MAX_AGE
 ): string {
     return jwt.sign({ userId, role }, getSessionSecret(), {
-        expiresIn: DEFAULT_MAX_AGE,
+        algorithm: "HS256",
+        expiresIn: maxAge,
+        issuer: getJwtIssuer(),
+        audience: getJwtAudience(),
     });
 }
 
 export function verifySessionToken(token: string): SessionPayload | null {
     try {
-        const payload = jwt.verify(token, getSessionSecret()) as SessionPayload;
+        const payload = jwt.verify(token, getSessionSecret(), {
+            algorithms: ["HS256"],
+            issuer: getJwtIssuer(),
+            audience: getJwtAudience(),
+        }) as SessionPayload;
         if (
             !payload ||
             typeof payload !== "object" ||
@@ -66,8 +82,8 @@ export function createSession(
     role: "user" | "admin",
     rememberMe: boolean = false
 ): string {
-    const token = createSessionToken(userId, role);
     const maxAge = rememberMe ? 30 * 24 * 60 * 60 : DEFAULT_MAX_AGE;
+    const token = createSessionToken(userId, role, maxAge);
     response.cookies.set(COOKIE_NAME, token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",

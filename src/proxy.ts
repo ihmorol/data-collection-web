@@ -5,6 +5,8 @@ type SessionPayload = {
     userId: number;
     role: "user" | "admin";
     exp?: number;
+    iss?: string;
+    aud?: string | string[];
 };
 
 const PUBLIC_ROUTES = ["/login", "/register"];
@@ -15,6 +17,14 @@ const ADMIN_API_PREFIX = "/api/admin/";
 const USER_API_PREFIX = "/api/responses";
 
 const encoder = new TextEncoder();
+
+function getExpectedIssuer(): string {
+    return process.env.JWT_ISSUER?.trim() || "memeconsole";
+}
+
+function getExpectedAudience(): string {
+    return process.env.JWT_AUDIENCE?.trim() || "memeconsole-web";
+}
 
 function base64UrlToBytes(input: string): Uint8Array {
     const normalized = input.replace(/-/g, "+").replace(/_/g, "/");
@@ -31,10 +41,18 @@ function decodePayload(part: string): SessionPayload | null {
     try {
         const json = new TextDecoder().decode(base64UrlToBytes(part));
         const parsed = JSON.parse(json) as SessionPayload;
+        const expectedIssuer = getExpectedIssuer();
+        const expectedAudience = getExpectedAudience();
+        const audienceOk =
+            parsed.aud === expectedAudience ||
+            (Array.isArray(parsed.aud) && parsed.aud.includes(expectedAudience));
+
         if (
             !parsed ||
             typeof parsed.userId !== "number" ||
-            (parsed.role !== "user" && parsed.role !== "admin")
+            (parsed.role !== "user" && parsed.role !== "admin") ||
+            parsed.iss !== expectedIssuer ||
+            !audienceOk
         ) {
             return null;
         }
@@ -83,7 +101,7 @@ async function getSessionFromRequest(request: NextRequest) {
     return verifySessionToken(token);
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
     const session = await getSessionFromRequest(request);
 

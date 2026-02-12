@@ -6,8 +6,8 @@ from playwright.sync_api import sync_playwright
 
 
 BASE_URL = os.getenv("E2E_BASE_URL", "http://localhost:3000")
-ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "")
-ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
+ADMIN_USERNAME = os.getenv("ADMIN_BOOTSTRAP_USERNAME", "") or os.getenv("ADMIN_USERNAME", "")
+ADMIN_PASSWORD = os.getenv("ADMIN_BOOTSTRAP_PASSWORD", "") or os.getenv("ADMIN_PASSWORD", "")
 OUT_DIR = Path(os.getenv("E2E_SCREENSHOT_DIR", "/tmp/memeconsole-e2e"))
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 

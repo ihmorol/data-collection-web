@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "seed": "npx tsx scripts/seed.ts",
+    "seed:admin": "npx tsx scripts/seed-admin.ts",
     "verify:seed": "npx tsx scripts/verify-seed.ts",
     "test:e2e:smoke": "python3 scripts/e2e_smoke.py"
   },
@@ -29,6 +30,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
+    "tsx": "^4.20.3",
     "typescript": "^5"
   }
 }
