@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import MemeCard from "@/components/MemeCard";
 import NavBar from "@/components/NavBar";
@@ -28,6 +28,8 @@ export default function GalleryPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [payload, setPayload] = useState<GalleryPayload | null>(null);
+    const [visibleCount, setVisibleCount] = useState(20);
+    const observerTarget = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         let active = true;
@@ -57,6 +59,29 @@ export default function GalleryPage() {
             active = false;
         };
     }, []);
+
+    // Intersection Observer for infinite scrolling
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting) {
+                    setVisibleCount((prev) => prev + 20);
+                }
+            },
+            { threshold: 0.1 }
+        );
+
+        if (observerTarget.current) {
+            observer.observe(observerTarget.current);
+        }
+
+        return () => observer.disconnect();
+    }, [payload]);
+
+    const visibleMemes = useMemo(() => {
+        if (!payload) return [];
+        return payload.memes.slice(0, visibleCount);
+    }, [payload, visibleCount]);
 
     const isAllDone = useMemo(() => {
         if (!payload) return false;
@@ -119,19 +144,28 @@ export default function GalleryPage() {
                     aria-label="Meme grid"
                 >
                     {loading || !payload
-                        ? Array.from({ length: 10 }).map((_, index) => (
+                        ? Array.from({ length: 20 }).map((_, index) => (
                             <Skeleton key={index} className="aspect-square w-full" />
                         ))
-                        : payload.memes.map((meme) => (
+                        : visibleMemes.map((meme) => (
                             <MemeCard
                                 key={meme.id}
                                 imageName={meme.image_name}
                                 displayOrder={meme.display_order}
                                 reviewed={meme.reviewed}
-                                onClick={() => router.push(`/meme/${meme.display_order}`)}
                             />
                         ))}
                 </section>
+
+                {/* Sentinel element for infinite scrolling */}
+                {!loading && payload && visibleCount < payload.memes.length && (
+                    <div
+                        ref={observerTarget}
+                        className="flex justify-center p-4 mt-4"
+                    >
+                        <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                    </div>
+                )}
             </main>
         </div>
     );

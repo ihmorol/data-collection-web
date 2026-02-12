@@ -6,19 +6,19 @@ type MemeCardProps = {
     imageName: string;
     displayOrder: number;
     reviewed: boolean;
-    onClick: () => void;
+    // onClick: () => void;
 };
 
 export default function MemeCard({
     imageName,
     displayOrder,
     reviewed,
-    onClick,
+    // onClick,
 }: MemeCardProps) {
     return (
         <button
             type="button"
-            onClick={onClick}
+            // onClick={onClick}
             className="group w-full text-left"
             aria-label={`Open meme #${String(displayOrder).padStart(3, "0")}`}
         >
