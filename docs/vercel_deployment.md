@@ -37,6 +37,8 @@ Add these in Vercel for **Production** (and Preview if needed):
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `ADMIN_BOOTSTRAP_USERNAME`
 - `ADMIN_BOOTSTRAP_PASSWORD`
+- `ADMIN_USERNAME` (optional legacy fallback)
+- `ADMIN_PASSWORD` (optional legacy fallback)
 - `SESSION_SECRET` (32+ chars)
 - `JWT_ISSUER` (e.g. `memeconsole`)
 - `JWT_AUDIENCE` (e.g. `memeconsole-web`)

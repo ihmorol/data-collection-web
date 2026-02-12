@@ -11,6 +11,8 @@ SUPABASE_SERVICE_ROLE_KEY=
 
 ADMIN_BOOTSTRAP_USERNAME=
 ADMIN_BOOTSTRAP_PASSWORD=
+ADMIN_USERNAME=
+ADMIN_PASSWORD=
 
 SESSION_SECRET=
 JWT_ISSUER=memeconsole
@@ -20,6 +22,8 @@ RATE_LIMIT_HASH_SECRET=
 
 ALLOWED_ORIGINS=
 ```
+
+`ADMIN_USERNAME` and `ADMIN_PASSWORD` are optional legacy fallbacks used only when `ADMIN_BOOTSTRAP_*` is unset or empty.
 
 ## 2. Supabase Keys (Where to Get)
 
