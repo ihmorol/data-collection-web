@@ -3,6 +3,20 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { getSession } from "@/lib/auth";
 
 type CsvValue = string | number | boolean | null | undefined;
+type JoinedRow = {
+    id: number;
+    perception: string;
+    is_offensive: string;
+    contains_vulgarity: boolean;
+    primary_target: string;
+    moderation_decision: string;
+    created_at: string;
+    annotators?: { username: string } | { username: string }[] | null;
+    meme_bank?:
+        | { image_name: string; display_order: number }
+        | { image_name: string; display_order: number }[]
+        | null;
+};
 
 function escapeCsv(value: CsvValue): string {
     if (value === null || value === undefined) return "";
@@ -21,6 +35,11 @@ function toCsvRows<T extends Record<string, CsvValue>>(
         headers.map((header) => escapeCsv(row[header])).join(",")
     );
     return [headers.join(","), ...lines].join("\n");
+}
+
+function getJoinedValue<T>(value: T | T[] | null | undefined): T | undefined {
+    if (!value) return undefined;
+    return Array.isArray(value) ? value[0] : value;
 }
 
 export async function GET(request: NextRequest) {
@@ -98,27 +117,23 @@ export async function GET(request: NextRequest) {
         );
     }
 
-    const rows = (data ?? []).map((row) => ({
+    const rows = ((data ?? []) as JoinedRow[]).map((row) => {
+        const annotator = getJoinedValue(row.annotators);
+        const meme = getJoinedValue(row.meme_bank);
+
+        return {
         id: row.id,
-        username:
-            "username" in (row.annotators ?? {})
-                ? (row.annotators as { username: string }).username
-                : "",
-        image_name:
-            "image_name" in (row.meme_bank ?? {})
-                ? (row.meme_bank as { image_name: string }).image_name
-                : "",
-        display_order:
-            "display_order" in (row.meme_bank ?? {})
-                ? (row.meme_bank as { display_order: number }).display_order
-                : "",
+            username: annotator?.username ?? "",
+            image_name: meme?.image_name ?? "",
+            display_order: meme?.display_order ?? "",
         perception: row.perception,
         is_offensive: row.is_offensive,
         contains_vulgarity: row.contains_vulgarity,
         primary_target: row.primary_target,
         moderation_decision: row.moderation_decision,
         created_at: row.created_at,
-    }));
+        };
+    });
 
     const headers = [
         "id",

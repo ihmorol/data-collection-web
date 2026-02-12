@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import ToastViewport from "@/components/ui/Toast";
 
 export const metadata: Metadata = {
   title: "MemeConsole — Meme Data Collection Platform",
@@ -26,6 +27,7 @@ export default function RootLayout({
       </head>
       <body className="font-body text-slate-200 antialiased overflow-x-hidden">
         {children}
+        <ToastViewport />
       </body>
     </html>
   );

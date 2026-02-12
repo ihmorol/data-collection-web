@@ -7,7 +7,7 @@ import AgeInput from "@/components/ui/AgeInput";
 import GlowButton from "@/components/ui/GlowButton";
 import SegmentedPills from "@/components/ui/SegmentedPills";
 import SliderInput from "@/components/ui/SliderInput";
-import Toast from "@/components/ui/Toast";
+import { showToast } from "@/components/ui/Toast";
 
 const POLITICAL_OPTIONS = [
     "Progressive",
@@ -47,10 +47,6 @@ export default function RegisterPage() {
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [usernameStatus, setUsernameStatus] = useState<UsernameStatus>("idle");
-    const [toast, setToast] = useState<{
-        message: string;
-        type: "success" | "error";
-    } | null>(null);
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -187,10 +183,7 @@ export default function RegisterPage() {
                 return;
             }
 
-            setToast({
-                message: `Welcome, ${trimmedUsername}!`,
-                type: "success",
-            });
+            showToast(`Welcome, ${trimmedUsername}!`, "success");
             setTimeout(() => router.push("/gallery"), 900);
         } catch {
             setErrors({ general: "Network error. Please try again." });
@@ -420,14 +413,6 @@ export default function RegisterPage() {
                     © {new Date().getFullYear()} MemeConsole
                 </footer>
             </div>
-
-            {toast && (
-                <Toast
-                    message={toast.message}
-                    type={toast.type}
-                    onClose={() => setToast(null)}
-                />
-            )}
         </div>
     );
 }
