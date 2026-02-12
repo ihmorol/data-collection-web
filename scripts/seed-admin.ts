@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { hashPassword } from "../src/lib/auth";
+import { getAdminCredentialsFromEnv } from "../src/lib/admin-credentials";
 
 function getEnv(name: string): string {
     const value = process.env[name];
@@ -7,29 +8,6 @@ function getEnv(name: string): string {
         throw new Error(`Missing required environment variable: ${name}`);
     }
     return value;
-}
-
-function getAdminCredentials() {
-    const username =
-        process.env.ADMIN_BOOTSTRAP_USERNAME ?? process.env.ADMIN_USERNAME;
-    const password =
-        process.env.ADMIN_BOOTSTRAP_PASSWORD ?? process.env.ADMIN_PASSWORD;
-
-    if (!username || username.trim().length < 3) {
-        throw new Error(
-            "Missing or invalid ADMIN_BOOTSTRAP_USERNAME (or ADMIN_USERNAME fallback)"
-        );
-    }
-    if (!password || password.length < 10) {
-        throw new Error(
-            "Missing or invalid ADMIN_BOOTSTRAP_PASSWORD (or ADMIN_PASSWORD fallback). Use at least 10 chars."
-        );
-    }
-
-    return {
-        username: username.trim(),
-        password,
-    };
 }
 
 async function main() {
@@ -41,7 +19,7 @@ async function main() {
         }
     );
 
-    const { username, password } = getAdminCredentials();
+    const { username, password } = getAdminCredentialsFromEnv(process.env);
     const passwordHash = await hashPassword(password);
 
     const { error } = await supabase.from("admins").upsert(
