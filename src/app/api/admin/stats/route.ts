@@ -2,6 +2,35 @@ import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { getSession } from "@/lib/auth";
 
+async function countActiveAnnotators() {
+    const supabase = createServerSupabaseClient();
+    const seen = new Set<number>();
+    const pageSize = 1000;
+    let from = 0;
+
+    while (true) {
+        const { data, error } = await supabase
+            .from("meme_reviews")
+            .select("annotator_id")
+            .order("id", { ascending: true })
+            .range(from, from + pageSize - 1);
+
+        if (error) throw error;
+        if (!data || data.length === 0) break;
+
+        for (const row of data) {
+            if (typeof row.annotator_id === "number") {
+                seen.add(row.annotator_id);
+            }
+        }
+
+        if (data.length < pageSize) break;
+        from += pageSize;
+    }
+
+    return seen.size;
+}
+
 export async function GET() {
     const session = await getSession();
     if (!session || session.role !== "admin") {
@@ -9,36 +38,37 @@ export async function GET() {
     }
 
     const supabase = createServerSupabaseClient();
+    const [{ count: totalUsers, error: usersError }, { count: totalReviews, error: reviewsError }] =
+        await Promise.all([
+            supabase.from("annotators").select("*", { count: "exact", head: true }),
+            supabase.from("meme_reviews").select("*", { count: "exact", head: true }),
+        ]);
 
-    const [usersResult, reviewsResult, activeResult] = await Promise.all([
-        supabase
-            .from("annotators")
-            .select("*", { count: "exact", head: true }),
-        supabase
-            .from("meme_reviews")
-            .select("*", { count: "exact", head: true }),
-        supabase
-            .from("meme_reviews")
-            .select("annotator_id")
-            .limit(1000),
-    ]);
+    if (usersError || reviewsError) {
+        return NextResponse.json(
+            { error: "Failed to fetch admin stats" },
+            { status: 500 }
+        );
+    }
 
-    const totalUsers = usersResult.count || 0;
-    const totalReviews = reviewsResult.count || 0;
+    let activeAnnotators = 0;
+    try {
+        activeAnnotators = await countActiveAnnotators();
+    } catch {
+        return NextResponse.json(
+            { error: "Failed to fetch active annotators" },
+            { status: 500 }
+        );
+    }
 
-    const uniqueAnnotators = new Set(
-        activeResult.data?.map((r) => r.annotator_id) || []
-    );
-    const activeAnnotators = uniqueAnnotators.size;
-
+    const users = totalUsers ?? 0;
+    const reviews = totalReviews ?? 0;
     const completionRate =
-        totalUsers > 0
-            ? Math.round((totalReviews / (totalUsers * 500)) * 1000) / 10
-            : 0;
+        users > 0 ? Number(((reviews / (users * 500)) * 100).toFixed(1)) : 0;
 
     return NextResponse.json({
-        totalUsers,
-        totalReviews,
+        totalUsers: users,
+        totalReviews: reviews,
         activeAnnotators,
         completionRate,
     });

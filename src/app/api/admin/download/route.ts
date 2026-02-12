@@ -2,6 +2,27 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { getSession } from "@/lib/auth";
 
+type CsvValue = string | number | boolean | null | undefined;
+
+function escapeCsv(value: CsvValue): string {
+    if (value === null || value === undefined) return "";
+    const text = String(value);
+    if (/["\n,]/.test(text)) {
+        return `"${text.replaceAll('"', '""')}"`;
+    }
+    return text;
+}
+
+function toCsvRows<T extends Record<string, CsvValue>>(
+    headers: string[],
+    rows: T[]
+): string {
+    const lines = rows.map((row) =>
+        headers.map((header) => escapeCsv(row[header])).join(",")
+    );
+    return [headers.join(","), ...lines].join("\n");
+}
+
 export async function GET(request: NextRequest) {
     const session = await getSession();
     if (!session || session.role !== "admin") {
@@ -9,8 +30,7 @@ export async function GET(request: NextRequest) {
     }
 
     const type = request.nextUrl.searchParams.get("type");
-
-    if (!type || !["users", "reviews"].includes(type)) {
+    if (type !== "users" && type !== "reviews") {
         return NextResponse.json(
             { error: "Invalid type. Must be 'users' or 'reviews'" },
             { status: 400 }
@@ -44,82 +64,61 @@ export async function GET(request: NextRequest) {
             "dark_humor_tolerance",
             "created_at",
         ];
-        const csv = [
-            headers.join(","),
-            ...(data || []).map((row) =>
-                headers
-                    .map((h) => {
-                        const val = row[h as keyof typeof row];
-                        const str = val === null ? "" : String(val);
-                        return str.includes(",") ? `"${str}"` : str;
-                    })
-                    .join(",")
-            ),
-        ].join("\n");
+        const csv = toCsvRows(headers, data ?? []);
 
         return new NextResponse(csv, {
             headers: {
-                "Content-Type": "text/csv",
+                "Content-Type": "text/csv; charset=utf-8",
                 "Content-Disposition": "attachment; filename=user_details.csv",
             },
         });
     }
 
-    // type === "reviews"
     const { data, error } = await supabase
         .from("meme_reviews")
         .select(
-            `id, annotator_id, meme_id, perception, is_offensive, contains_vulgarity, primary_target, moderation_decision, created_at,
-      annotators!inner(username),
-      meme_bank!inner(image_name, display_order)`
+            `
+            id,
+            perception,
+            is_offensive,
+            contains_vulgarity,
+            primary_target,
+            moderation_decision,
+            created_at,
+            annotators:annotator_id(username),
+            meme_bank:meme_id(image_name, display_order)
+            `
         )
         .order("id", { ascending: true });
 
     if (error) {
-        // Fallback: fetch without join if relationship isn't set up
-        const { data: reviewsOnly, error: reviewsError } = await supabase
-            .from("meme_reviews")
-            .select("*")
-            .order("id", { ascending: true });
-
-        if (reviewsError) {
-            return NextResponse.json(
-                { error: "Failed to fetch review data" },
-                { status: 500 }
-            );
-        }
-
-        const headers = [
-            "id",
-            "annotator_id",
-            "meme_id",
-            "perception",
-            "is_offensive",
-            "contains_vulgarity",
-            "primary_target",
-            "moderation_decision",
-            "created_at",
-        ];
-        const csv = [
-            headers.join(","),
-            ...(reviewsOnly || []).map((row) =>
-                headers
-                    .map((h) => {
-                        const val = row[h as keyof typeof row];
-                        const str = val === null ? "" : String(val);
-                        return str.includes(",") ? `"${str}"` : str;
-                    })
-                    .join(",")
-            ),
-        ].join("\n");
-
-        return new NextResponse(csv, {
-            headers: {
-                "Content-Type": "text/csv",
-                "Content-Disposition": "attachment; filename=meme_reviews.csv",
-            },
-        });
+        return NextResponse.json(
+            { error: "Failed to fetch review data" },
+            { status: 500 }
+        );
     }
+
+    const rows = (data ?? []).map((row) => ({
+        id: row.id,
+        username:
+            "username" in (row.annotators ?? {})
+                ? (row.annotators as { username: string }).username
+                : "",
+        image_name:
+            "image_name" in (row.meme_bank ?? {})
+                ? (row.meme_bank as { image_name: string }).image_name
+                : "",
+        display_order:
+            "display_order" in (row.meme_bank ?? {})
+                ? (row.meme_bank as { display_order: number }).display_order
+                : "",
+        perception: row.perception,
+        is_offensive: row.is_offensive,
+        contains_vulgarity: row.contains_vulgarity,
+        primary_target: row.primary_target,
+        moderation_decision: row.moderation_decision,
+        created_at: row.created_at,
+    }));
 
     const headers = [
         "id",
@@ -133,36 +132,11 @@ export async function GET(request: NextRequest) {
         "moderation_decision",
         "created_at",
     ];
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    const csv = [
-        headers.join(","),
-        ...(data || []).map((row: any) => {
-            const flat = {
-                id: row.id,
-                username: row.annotators?.username || "",
-                image_name: row.meme_bank?.image_name || "",
-                display_order: row.meme_bank?.display_order || "",
-                perception: row.perception,
-                is_offensive: row.is_offensive,
-                contains_vulgarity: row.contains_vulgarity,
-                primary_target: row.primary_target,
-                moderation_decision: row.moderation_decision,
-                created_at: row.created_at,
-            };
-            return headers
-                .map((h) => {
-                    const val = flat[h as keyof typeof flat];
-                    const str = val === null ? "" : String(val);
-                    return str.includes(",") ? `"${str}"` : str;
-                })
-                .join(",");
-        }),
-    ].join("\n");
-    /* eslint-enable @typescript-eslint/no-explicit-any */
+    const csv = toCsvRows(headers, rows);
 
     return new NextResponse(csv, {
         headers: {
-            "Content-Type": "text/csv",
+            "Content-Type": "text/csv; charset=utf-8",
             "Content-Disposition": "attachment; filename=meme_reviews.csv",
         },
     });

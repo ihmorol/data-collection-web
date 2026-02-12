@@ -59,9 +59,17 @@ export function middleware(request: NextRequest) {
             return NextResponse.redirect(new URL("/login", request.url));
         }
         if (session.role !== "admin") {
-            return new NextResponse("Forbidden", {
+            const html = `<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>403 Forbidden</title></head>
+<body style="background:#0B0118;color:#fff;font-family:Inter,sans-serif;display:grid;place-items:center;min-height:100vh;margin:0;">
+<main style="text-align:center;padding:24px;border:1px solid #252530;border-radius:12px;background:rgba(22,16,33,.8)">
+<h1 style="margin:0 0 8px;font-size:28px;">403</h1>
+<p style="margin:0 0 16px;color:#cbd5e1;">You do not have admin access.</p>
+<a href="/gallery" style="color:#A78BFA;text-decoration:none;font-weight:600;">Back to Gallery</a>
+</main></body></html>`;
+            return new NextResponse(html, {
                 status: 403,
-                headers: { "content-type": "text/plain; charset=utf-8" },
+                headers: { "content-type": "text/html; charset=utf-8" },
             });
         }
         return NextResponse.next();
